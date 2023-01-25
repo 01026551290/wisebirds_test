@@ -9,6 +9,7 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import {useEffect, useState} from "react";
 import { useLocation, Link } from 'react-router-dom';
+import axios from "axios";
 
 const Gnb = () => {
     const location = useLocation();
@@ -26,9 +27,18 @@ const Gnb = () => {
     const handleChange = (event: SelectChangeEvent) => {
         setLevel(event.target.value as string);
     };
+    const getUserInfo = async () => {
+        const res = await axios({
+            method: 'get',
+            url: '/api/auth/me'
+        })
+        if (res.status === 200) {
+            setTooltipContent(`${res.data.name} ${res.data.email} ${res.data.company.name}`)
+        }
+    }
     useEffect(() => {
-        setTooltipContent('홍길동 abc@abc.com, 와이즈버드')
         if (location.pathname.includes('user')) setIsHome(false)
+        getUserInfo();
     }, [])
     return (
         <$headerWrap>
