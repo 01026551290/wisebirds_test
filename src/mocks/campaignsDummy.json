@@ -25,16 +25,18 @@
     {
       "id":3,
       "name":"캠페인3",
-      "enabled":true,
+      "enabled":false,
       "campaign_objective":"LEAD",
       "impressions":538086,
       "clicks":1171,
       "ctr":0.3833,
       "video_views":512,
       "vtr":0.2512
-    },
+    }
   ],
   "size": 25,
   "total_elements": 2,
-  "total_pages": 1,
+  "total_pages": 7,
+  "first": true,
+  "last": false
 }
