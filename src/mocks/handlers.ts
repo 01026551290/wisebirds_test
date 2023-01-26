@@ -16,7 +16,7 @@ export const handlers = [
         await sleep(200);
         return res(ctx.status(200), ctx.json(campaigns))
     }),
-    rest.get('/api/users/:email/exists' , async (req,res,ctx) => {
+    rest.get('/api/users/abc@abc.com/exists' , async (req,res,ctx) => {
         await sleep(200);
         return res(ctx.status(200), ctx.json({"result": true}))
     }),
@@ -26,7 +26,7 @@ export const handlers = [
     }),
     rest.post('/api/users', async (req,res,ctx) => {
         await sleep(200);
-        return res(ctx.status(200), ctx.json({"result": true, "id": 1}))
+        return res(ctx.status(200), ctx.json({"result": true, "id": 5}))
     }),
 ]
 
