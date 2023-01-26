@@ -53,6 +53,7 @@ const User = () => {
     const [users, setUsers] = useState<UsersInter | null>(null)
     const [page, setPage] = useState<number>(1)
     const [open, setOpen] = useState<boolean>(false)
+    const [update, setUpdate] = useState<boolean>(false)
     const [idErrorContent, setIdErrorContent] = useState<string>('아이디(이메일)을 입력하세요.');
     const [pwErrorContent, setPwErrorContent] = useState<string>('비밀번호를 입력하세요.');
     const [checkPwErrorContent, setCheckPwErrorContent] = useState<string>('비밀번호를 입력하세요.');
@@ -60,8 +61,11 @@ const User = () => {
     const [passwordToggle, setPasswordToggle] = useState<boolean>(false);
     const [checkPasswordToggle, setCheckPasswordToggle] = useState<boolean>(false);
     const inputRef = useRef<Array<any>>([])
+    const [updateUser, setUpdateUser] = useState<UserInter | null>(null);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const handleUpdate = () => setUpdate(true);
+    const handleUpdateClose = () => setUpdate(false);
     const getUsers = async () => {
         const res = await axios({
             method: 'get',
@@ -168,6 +172,31 @@ const User = () => {
             setOpen(false)
         }
     }
+
+    const handleUpdateUser = (user: UserInter) => {
+        setUpdateUser(user)
+        setUpdate(true)
+    }
+    const updateUserData = async () => {
+        const nameValue = inputRef.current[3].children[0].children[0].value
+        let formData = new FormData();
+        formData.append('name', nameValue)
+        const res = await axios({
+            method: 'patch',
+            url: '/api/users/1',
+            data: formData
+            // url: '/api/campaigns/' + updateUser?.id
+        })
+        if (res.status === 200) {
+            console.log('res', res)
+            users?.content.map(user => {
+                if (user.id === updateUser?.id)
+                    user.name = nameValue
+            })
+            setUsers(users)
+            setUpdate(false)
+        }
+    }
     useEffect(() => {
         getUsers()
     }, [page])
@@ -198,7 +227,7 @@ const User = () => {
                                         </TableCell>
                                         <TableCell align="right">{user.name}</TableCell>
                                         <TableCell align="right">{user.last_login_at}</TableCell>
-                                        <TableCell align="right">수정</TableCell>
+                                        <TableCell align="right" onClick={() => handleUpdateUser(user)}>수정</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -288,6 +317,43 @@ const User = () => {
                     <$formBtnWrap>
                         <Button variant="outlined" onClick={handleClose}>취소</Button>
                         <Button variant="contained" onClick={sendUserData}>생성</Button>
+                    </$formBtnWrap>
+                </Box>
+            </Modal>
+            <Modal open={update}
+                   onClose={handleUpdateClose}
+                   aria-labelledby="modal-modal-title"
+                   aria-describedby="modal-modal-description">
+                <Box sx={style}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                        사용자 수정
+                    </Typography>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        <$formBox>
+                            <label>아이디</label>
+                            <TextField
+                                defaultValue={updateUser?.email}
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                                id="outlined-required"
+                            />
+                        </$formBox>
+                        <$formBox>
+                            <label>이름</label>
+                            <TextField
+                                required
+                                id="outlined-required"
+                                defaultValue={updateUser?.name}
+                                helperText={nameErrorContent}
+                                ref={el => (inputRef.current[3] = el)}
+                                onChange={handleChangeName}
+                            />
+                        </$formBox>
+                    </Typography>
+                    <$formBtnWrap>
+                        <Button variant="outlined" onClick={handleUpdateClose}>취소</Button>
+                        <Button variant="contained" onClick={updateUserData}>저장</Button>
                     </$formBtnWrap>
                 </Box>
             </Modal>

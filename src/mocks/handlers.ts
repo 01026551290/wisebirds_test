@@ -24,6 +24,10 @@ export const handlers = [
         await sleep(200);
         return res(ctx.status(200), ctx.json({"result": true, "id": 1}))
     }),
+    rest.patch('/api/users/1', async (req,res,ctx) => {
+        await sleep(200);
+        return res(ctx.status(200), ctx.json({"result": true, "id": 1}))
+    }),
     rest.post('/api/users', async (req,res,ctx) => {
         await sleep(200);
         return res(ctx.status(200), ctx.json({"result": true, "id": 5}))
