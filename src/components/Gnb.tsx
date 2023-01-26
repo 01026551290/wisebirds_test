@@ -8,15 +8,15 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import {useEffect, useState} from "react";
-import { useLocation, Link } from 'react-router-dom';
+import {useLocation, Link, useNavigate} from 'react-router-dom';
 import axios from "axios";
-
 const Gnb = () => {
     const location = useLocation();
     const [level, setLevel] = useState<string>('admin');
     const [open, setOpen] = useState<boolean>(false);
     const [tooltipContent, setTooltipContent] = useState<string>('')
     const [isHome, setIsHome] = useState<boolean>(true)
+    const navigate = useNavigate();
     const handleTooltipClose = () => {
         setOpen(false);
     };
@@ -26,6 +26,8 @@ const Gnb = () => {
     };
     const handleChange = (event: SelectChangeEvent) => {
         setLevel(event.target.value as string);
+        sessionStorage.setItem('level', event.target.value as string);
+        navigate('/')
     };
     const getUserInfo = async () => {
         const res = await axios({

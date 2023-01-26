@@ -14,7 +14,6 @@ import axios from "axios";
 import {numberComma, numberPercent} from "@/util/common";
 import Switch from '@mui/material/Switch';
 
-
 interface CampaignsInter {
     content: CampaignInter[];
     total_elements: number;
@@ -43,6 +42,7 @@ const label = { inputProps: { 'aria-label': 'Switch demo' } };
 const Campaign = () => {
     const [campaigns, setCampaigns] = useState<CampaignsInter | null>(null)
     const [page, setPage] = useState<number>(1)
+    const level = sessionStorage.getItem('level')
     const getCampaigns = async () => {
         const res = await axios({
             method: 'get',
@@ -57,19 +57,15 @@ const Campaign = () => {
         }
     }
     const updateStatus = async (id: number) => {
-        const res = await axios({
+        await axios({
             method: 'patch',
             url: '/api/campaigns/1'
             // url: '/api/campaigns/' + id
         })
     }
-    const handlePage = (currentPage: number): void => {
-        setPage(currentPage)
-    }
-    const handleEnabled = (event: React.ChangeEvent<HTMLInputElement>, id: number) => {
-        updateStatus(id)
-        // console.log('event', event.target.checked)
-    }
+    const handlePage = (currentPage: number): void => setPage(currentPage)
+    const handleEnabled = (id: number) => updateStatus(id)
+
     useEffect(() => {
         getCampaigns()
     }, [page])
@@ -99,7 +95,18 @@ const Campaign = () => {
                                 {campaigns?.content.map((campaign) => (
                                     <TableRow key={campaign.id}>
                                         <TableCell align={'center'}>
-                                            {campaign.enabled ? (<Switch {...label} defaultChecked onChange={(evnet) => handleEnabled(evnet, campaign.id)}/>) : (<Switch {...label} onChange={(evnet) => handleEnabled(evnet, campaign.id)}/>)}
+                                            {
+                                                campaign.enabled ?
+                                                    ( level === 'viewer' ?
+                                                        <Switch {...label} defaultChecked disabled onChange={() => handleEnabled(campaign.id)}/> :
+                                                            <Switch {...label} defaultChecked onChange={() => handleEnabled(campaign.id)}/>
+                                                    )
+                                                    :
+                                                    ( level === 'viewer' ?
+                                                            <Switch {...label}  disabled onChange={() => handleEnabled(campaign.id)}/> :
+                                                            <Switch {...label}  onChange={() => handleEnabled(campaign.id)}/>
+                                                    )
+                                            }
                                         </TableCell>
                                         <TableCell align="left">{campaign.name}</TableCell>
                                         <TableCell align="left">{campaign.campaign_objective}</TableCell>

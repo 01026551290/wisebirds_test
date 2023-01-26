@@ -2,11 +2,11 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import styled from "styled-components";
 interface Props {
-    totalPages: number;
+    totalPages: number | undefined;
     page: number;
-    isFirst: boolean;
-    isLast: boolean;
-    onPageChange: (page: number) => void; // 페이지 선택시 함수
+    isFirst: boolean | undefined;
+    isLast: boolean | undefined;
+    onPageChange: (page: number) => void;
 }
 
 const Pagination = ({totalPages, page, isFirst, isLast, onPageChange}: Props) => {
